@@ -1,0 +1,18 @@
+# Общие
+*.log
+*.env
+.env
+node_modules/
+bin/
+obj/
+.vscode/
+.idea/
+__pycache__/
+*.DS_Store
+
+# Docker volumes
+volumes/
+db_data/
+
+# Build outputs
+api/out/
