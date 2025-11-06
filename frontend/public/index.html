@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Облачный Склад</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 30px;
+            background-color: #f7f9fc;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .form-section {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        input {
+            margin-right: 10px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #0078d7;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #005ea0;
+        }
+        button.cancel {
+            background-color: #6c757d;
+        }
+        button.cancel:hover {
+            background-color: #545b62;
+        }
+        .operations {
+            margin: 20px 0;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #eaeaea;
+            font-weight: bold;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        .form-row input {
+            flex: 1;
+            min-width: 120px;
+        }
+        .product-suggestions {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .suggestion-item {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            margin: 2px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background: #0078d7;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>📦 Облачный Склад</h1>
+
+    <div class="form-section">
+        <h2>Добавить новый товар</h2>
+        <form id="productForm">
+            <div class="form-row">
+                <input type="text" id="name" placeholder="Название" required>
+                <input type="text" id="sku" placeholder="Артикул" required>
+                <input type="number" id="purchasePrice" placeholder="Цена закупки" step="0.01" required>
+                <input type="number" id="sellPrice" placeholder="Цена продажи" step="0.01" required>
+                <input type="number" id="quantity" placeholder="Количество" required>
+                <button type="submit">Добавить товар</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="operations">
+        <button onclick="showReceiveForm()">📥 Приход товара</button>
+        <button onclick="showSellForm()">📤 Продажа товара</button>
+    </div>
+
+    <!-- Формы для операций -->
+    <div id="forms" style="display: none;">
+        <!-- Форма прихода -->
+        <div class="form-section" id="receiveForm" style="display: none;">
+            <h3>📥 Приход товара на склад</h3>
+            <div class="form-row">
+                <input type="text" id="receiveSku" placeholder="Артикул товара" list="skuList">
+                <input type="number" id="receiveQuantity" placeholder="Количество">
+                <button onclick="receiveStock()">Принять</button>
+                <button class="cancel" onclick="hideForm('receiveForm')">Отмена</button>
+            </div>
+            <div class="product-suggestions" id="receiveSuggestions">
+                <!-- Сюда будут добавляться подсказки -->
+            </div>
+        </div>
+
+        <!-- Форма продажи -->
+        <div class="form-section" id="sellForm" style="display: none;">
+            <h3>📤 Продажа товара со склада</h3>
+            <div class="form-row">
+                <input type="text" id="sellSku" placeholder="Артикул товара" list="skuList">
+                <input type="number" id="sellQuantity" placeholder="Количество">
+                <button onclick="sellStock()">Продать</button>
+                <button class="cancel" onclick="hideForm('sellForm')">Отмена</button>
+            </div>
+            <div class="product-suggestions" id="sellSuggestions">
+                <!-- Сюда будут добавляться подсказки -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Datalist для автодополнения артикулов -->
+    <datalist id="skuList">
+        <!-- Будет заполняться динамически -->
+    </datalist>
+
+    <div class="form-section">
+        <h2>Список товаров на складе</h2>
+        <table id="productsTable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Артикул</th>
+                    <th>Закупка</th>
+                    <th>Продажа</th>
+                    <th>Кол-во</th>
+                    <th>Стоимость на складе</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
