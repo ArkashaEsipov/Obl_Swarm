@@ -1,33 +1,6 @@
 version: '3.8'
 
 services:
-  api:
-    image: inventory-api:latest
-    deploy:
-      replicas: 3
-      restart_policy:
-        condition: any
-        delay: 5s
-        max_attempts: 3
-      update_config:
-        parallelism: 1
-        delay: 10s
-      rollback_config:
-        parallelism: 1
-        delay: 5s
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__Default=Server=db;Database=inventory;User=root;Password=secret;
-    networks:
-      - inventory-network
-    healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8081/api/products"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    start_period: 40s
-    depends_on:
-      - db
 
   db:
     image: mysql:8.0
@@ -45,7 +18,30 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     networks:
-      - inventory-network
+      - inventory-overlay
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-psecret"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  api:
+    image: inventory-api:latest
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Default=Server=db;Database=inventory;User=root;Password=secret;
+    networks:
+      - inventory-overlay
 
   frontend:
     image: inventory-frontend:latest
@@ -61,7 +57,7 @@ services:
     environment:
       - API_URL=http://api:8081
     networks:
-      - inventory-network
+      - inventory-overlay
     ports:
       - target: 8080
         published: 8080
@@ -72,5 +68,6 @@ volumes:
   db_data:
 
 networks:
-  inventory-network:
+  inventory-overlay:
     driver: overlay
+    attachable: true
