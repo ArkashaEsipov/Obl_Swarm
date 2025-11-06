@@ -20,6 +20,12 @@ services:
       - ConnectionStrings__Default=Server=db;Database=inventory;User=root;Password=secret;
     networks:
       - inventory-network
+    healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:8081/api/products"]
+    interval: 30s
+    timeout: 10s
+    retries: 3
+    start_period: 40s
     depends_on:
       - db
 
