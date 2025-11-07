@@ -1,6 +1,4 @@
-const apiUrl = window.location.hostname === 'localhost' 
-    ? "http://localhost:8081/api/products" 
-    : "/api/products";
+const apiUrl = "/api/products";
 
 let productsData = []; // Сохраняем данные о товарах для подсказок
 
