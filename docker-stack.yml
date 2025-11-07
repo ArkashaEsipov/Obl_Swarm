@@ -44,7 +44,7 @@ services:
       - inventory-overlay
 
   frontend:
-    image: inventory-frontend:latest
+    image: inventory-frontend:v2
     deploy:
       replicas: 3
       restart_policy:
